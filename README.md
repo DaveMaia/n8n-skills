@@ -1,287 +1,179 @@
 # n8n-skills
 
-**Expert Claude Code skills for building flawless n8n workflows using the n8n-mcp MCP server**
+Kit de **skills especializadas para agentes de IA** criarem workflows n8n com qualidade de produção usando o servidor MCP **n8n-mcp**.
 
-[![GitHub stars](https://img.shields.io/github/stars/czlonkowski/n8n-skills?style=social)](https://github.com/czlonkowski/n8n-skills)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![n8n-mcp](https://img.shields.io/badge/n8n--mcp-compatible-green.svg)](https://github.com/czlonkowski/n8n-mcp)
-
-## Watch the Introduction Video
-
-[![n8n Skills Introduction](skills.png)](https://youtu.be/e6VvRqmUY2Y?si=6Igply3cadjO6Xx0)
+> Projeto otimizado para execução em ambientes agent-first (incluindo **Google Antigravity**) sem perder compatibilidade com Claude Code, Claude.ai e uso via API.
 
 ---
 
-## 🎯 What is this?
+## 1) Objetivo do projeto
 
-This repository contains **7 complementary Claude Code skills** that teach AI assistants how to build production-ready n8n workflows using the [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) MCP server.
+Este repositório existe para reduzir os erros mais comuns quando um agente tenta construir workflows n8n de forma programática:
 
-### Why These Skills Exist
+- uso incorreto das ferramentas MCP;
+- erros de sintaxe de expressão (`{{ ... }}`);
+- configuração incompleta/inconsistente de nós;
+- loops de validação;
+- escolha ruim de arquitetura de workflow.
 
-Building n8n workflows programmatically can be challenging. Common issues include:
-- Using MCP tools incorrectly or inefficiently
-- Getting stuck in validation error loops
-- Not knowing which workflow patterns to use
-- Misconfiguring nodes and their dependencies
-
-These skills solve these problems by teaching Claude:
-- ✅ Correct n8n expression syntax ({{}} patterns)
-- ✅ How to use n8n-mcp tools effectively
-- ✅ Proven workflow patterns from real-world usage
-- ✅ Validation error interpretation and fixing
-- ✅ Operation-aware node configuration
+A proposta é fornecer instruções modulares (skills) que podem ser compostas dinamicamente conforme o tipo de tarefa.
 
 ---
 
-## 📚 The 7 Skills
+## 2) Escopo atual (v1.4.x)
 
-### 1. **n8n Expression Syntax**
-Teaches correct n8n expression syntax and common patterns.
+O pacote contém **7 skills complementares**:
 
-**Activates when**: Writing expressions, using {{}} syntax, accessing $json/$node variables, troubleshooting expression errors.
+1. **n8n-expression-syntax**
+2. **n8n-mcp-tools-expert**
+3. **n8n-workflow-patterns**
+4. **n8n-validation-expert**
+5. **n8n-node-configuration**
+6. **n8n-code-javascript**
+7. **n8n-code-python**
 
-**Key Features**:
-- Core variables ($json, $node, $now, $env)
-- **Critical gotcha**: Webhook data is under `$json.body`
-- Common mistakes catalog with fixes
-- When NOT to use expressions (Code nodes!)
+Cada skill possui:
 
-### 2. **n8n MCP Tools Expert** (HIGHEST PRIORITY)
-Expert guide for using n8n-mcp MCP tools effectively.
-
-**Activates when**: Searching for nodes, validating configurations, accessing templates, managing workflows.
-
-**Key Features**:
-- Tool selection guide (which tool for which task)
-- nodeType format differences (nodes-base.* vs n8n-nodes-base.*)
-- Validation profiles (minimal/runtime/ai-friendly/strict)
-- Smart parameters (branch="true" for IF nodes)
-- Auto-sanitization system explained
-
-**Most Important**: Teaches correct MCP tool usage patterns and parameter formats
-
-### 3. **n8n Workflow Patterns**
-Build workflows using 5 proven architectural patterns.
-
-**Activates when**: Creating workflows, connecting nodes, designing automation.
-
-**Key Features**:
-- 5 proven patterns (webhook processing, HTTP API, database, AI, scheduled)
-- Workflow creation checklist
-- Real examples from 2,653+ n8n templates
-- Connection best practices
-- Pattern selection guide
-
-### 4. **n8n Validation Expert**
-Interpret validation errors and guide fixing.
-
-**Activates when**: Validation fails, debugging workflow errors, handling false positives.
-
-**Key Features**:
-- Validation loop workflow
-- Real error catalog
-- Auto-sanitization behavior explained
-- False positives guide
-- Profile selection for different stages
-
-### 5. **n8n Node Configuration**
-Operation-aware node configuration guidance.
-
-**Activates when**: Configuring nodes, understanding property dependencies, setting up AI workflows.
-
-**Key Features**:
-- Property dependency rules (e.g., sendBody → contentType)
-- Operation-specific requirements
-- AI connection types (8 types for AI Agent workflows)
-- Common configuration patterns
-
-### 6. **n8n Code JavaScript**
-Write effective JavaScript code in n8n Code nodes.
-
-**Activates when**: Writing JavaScript in Code nodes, troubleshooting Code node errors, making HTTP requests with $helpers, working with dates.
-
-**Key Features**:
-- Data access patterns ($input.all(), $input.first(), $input.item)
-- **Critical gotcha**: Webhook data under `$json.body`
-- Correct return format: `[{json: {...}}]`
-- Built-in functions ($helpers.httpRequest(), DateTime, $jmespath())
-- Top 5 error patterns with solutions (covering 62%+ of failures)
-- 10 production-tested patterns
-
-### 7. **n8n Code Python**
-Write Python code in n8n Code nodes with proper limitations awareness.
-
-**Activates when**: Writing Python in Code nodes, need to know Python limitations, working with standard library.
-
-**Key Features**:
-- **Important**: Use JavaScript for 95% of use cases
-- Python data access (_input, _json, _node)
-- **Critical limitation**: No external libraries (requests, pandas, numpy)
-- Standard library reference (json, datetime, re, etc.)
-- Workarounds for missing libraries
-- Common Python patterns for n8n
+- `SKILL.md` (núcleo da skill)
+- arquivos de referência (`COMMON_*`, `EXAMPLES`, guias específicos etc.)
+- `README.md` local com metadados
 
 ---
 
-## 🚀 Installation
+## 3) Arquitetura do repositório
 
-### Prerequisites
+```text
+n8n-skills/
+├── skills/                        # Implementações das 7 skills
+├── evaluations/                   # Cenários de validação por domínio
+├── docs/                          # Instalação, uso, dev e guias de operação
+├── dist/                          # Artefatos zip para distribuição
+├── AGENTS.md                      # Regras operacionais para agentes
+├── GEMINI.md                      # Guardrails agent-first (Antigravity-ready)
+├── build.sh                       # Script de empacotamento
+└── README.md
+```
 
-1. **n8n-mcp MCP server** installed and configured ([Installation Guide](https://github.com/czlonkowski/n8n-mcp))
-2. **Claude Code**, Claude.ai, or Claude API access
-3. `.mcp.json` configured with n8n-mcp server
+---
+
+## 4) Compatibilidade de plataformas
 
 ### Claude Code
+- Instalação via plugin (`/plugin install`) ou zip bundle.
 
-**Method 1: Plugin Installation** (Recommended)
+### Claude.ai / Claude Desktop
+- Upload das skills em zips individuais.
+
+### API / SDK
+- Carregamento das skills como instruções externas em pipelines de agentes.
+
+### Google Antigravity (agent-first)
+- O repositório inclui:
+  - `AGENTS.md` para regras operacionais cross-agent;
+  - `GEMINI.md` para fluxo recomendado de execução, verificação e entrega;
+  - `docs/ANTIGRAVITY_BEST_PRACTICES.md` para práticas comunitárias e templates de prompt.
+
+---
+
+## 5) Como instalar
+
+## Pré-requisitos
+
+1. n8n-mcp instalado/configurado
+2. ambiente com suporte a skills/agentes
+3. (opcional) credenciais da API do n8n para operações de criação/gestão de workflow
+
+### Opção A — Claude Code (recomendada)
+
 ```bash
-# Install directly as a Claude Code plugin
 /plugin install czlonkowski/n8n-skills
 ```
 
-**Method 2: Via Marketplace**
-```bash
-# Add as marketplace, then browse and install
-/plugin marketplace add czlonkowski/n8n-skills
+ou manualmente:
 
-# Then browse available plugins
-/plugin install
-# Select "n8n-mcp-skills" from the list
-```
-
-**Method 3: Manual Installation**
 ```bash
-# 1. Clone this repository
 git clone https://github.com/czlonkowski/n8n-skills.git
-
-# 2. Copy skills to your Claude Code skills directory
 cp -r n8n-skills/skills/* ~/.claude/skills/
-
-# 3. Reload Claude Code
-# Skills will activate automatically
 ```
 
-### Claude.ai
+### Opção B — Claude.ai / Desktop
 
-1. Download individual skill folders from `skills/`
-2. Zip each skill folder
-3. Upload via Settings → Capabilities → Skills
+- Use os zips individuais em `dist/`
+- Faça upload um por vez em **Settings → Capabilities → Skills**
 
-### API / SDK
+### Opção C — Bundle completo
 
-See [docs/INSTALLATION.md](docs/INSTALLATION.md) for detailed instructions.
+- Use `dist/n8n-mcp-skills-v1.4.0.zip` em ambientes compatíveis com estrutura de plugin completa.
 
 ---
 
-## 💡 Usage
+## 6) Uso prático
 
-Skills activate **automatically** when relevant queries are detected:
+As skills ativam por intenção da consulta.
 
-```
-"How do I write n8n expressions?"
-→ Activates: n8n Expression Syntax
+Exemplos:
 
-"Find me a Slack node"
-→ Activates: n8n MCP Tools Expert
-
-"Build a webhook workflow"
-→ Activates: n8n Workflow Patterns
-
-"Why is validation failing?"
-→ Activates: n8n Validation Expert
-
-"How do I configure the HTTP Request node?"
-→ Activates: n8n Node Configuration
-
-"How do I access webhook data in a Code node?"
-→ Activates: n8n Code JavaScript
-
-"Can I use pandas in Python Code node?"
-→ Activates: n8n Code Python
-```
-
-### Skills Work Together
-
-When you ask: **"Build and validate a webhook to Slack workflow"**
-
-1. **n8n Workflow Patterns** identifies webhook processing pattern
-2. **n8n MCP Tools Expert** searches for webhook and Slack nodes
-3. **n8n Node Configuration** guides node setup
-4. **n8n Code JavaScript** helps process webhook data with proper .body access
-5. **n8n Expression Syntax** helps with data mapping in other nodes
-6. **n8n Validation Expert** validates the final workflow
-
-All skills compose seamlessly!
+- “Como escrever expressão n8n com `$json.body`?” → `n8n-expression-syntax`
+- “Encontre o node Slack e valide config” → `n8n-mcp-tools-expert` + `n8n-validation-expert`
+- “Monte workflow webhook → transformação → notificação” → `n8n-workflow-patterns`
+- “Erro no Code node JS / formato de retorno” → `n8n-code-javascript`
 
 ---
 
-## 📖 Documentation
+## 7) Qualidade e desenvolvimento
 
-- [Installation Guide](docs/INSTALLATION.md) - Detailed installation for all platforms
-- [Usage Guide](docs/USAGE.md) - How to use skills effectively
-- [Development Guide](docs/DEVELOPMENT.md) - Contributing and testing
-- [MCP Testing Log](docs/MCP_TESTING_LOG.md) - Real tool responses used in skills
+O projeto segue uma abordagem orientada a avaliação:
+
+1. definir cenários (`evaluations/*`)
+2. ajustar skill de forma mínima e objetiva
+3. validar comportamento esperado
+4. iterar até consistência
+
+Diretrizes de contribuição:
+
+- priorizar exemplos reais/reproduzíveis;
+- evitar `SKILL.md` excessivamente longo;
+- manter documentação e empacotamento sincronizados.
+
+Veja também:
+
+- `docs/DEVELOPMENT.md`
+- `docs/MCP_TESTING_LOG.md`
 
 ---
 
+## 8) Empacotamento
 
-## 🧪 Testing
-
-Each skill includes 3+ evaluations for quality assurance:
+Para gerar artefatos:
 
 ```bash
-# Run evaluations (if testing framework available)
-npm test
-
-# Or manually test with Claude
-claude-code --skill n8n-expression-syntax "Test webhook data access"
+./build.sh
 ```
 
----
+O build gera:
 
-## 🤝 Contributing
+- zips individuais por skill (Claude.ai/Desktop)
+- zip bundle completo (Claude Code e ambientes compatíveis)
 
-Contributions welcome! Please see [DEVELOPMENT.md](docs/DEVELOPMENT.md) for guidelines.
-
-### Development Approach
-
-1. **Evaluation-First**: Write test scenarios before implementation
-2. **MCP-Informed**: Test tools, document real responses
-3. **Iterative**: Test against evaluations, iterate until 100% pass
-4. **Concise**: Keep SKILL.md under 500 lines
-5. **Real Examples**: All examples from real templates/tools
+O bundle inclui `.claude-plugin/`, `skills/`, `README.md`, `LICENSE`, `AGENTS.md` e `GEMINI.md`.
 
 ---
 
-## 📝 License
+## 9) Documentação principal
 
-MIT License - see [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Credits
-
-**Conceived by Romuald Członkowski**
-- Website: [www.aiadvisors.pl/en](https://www.aiadvisors.pl/en)
-- Part of the [n8n-mcp project](https://github.com/czlonkowski/n8n-mcp)
+- `docs/INSTALLATION.md`
+- `docs/USAGE.md`
+- `docs/DEVELOPMENT.md`
+- `docs/ANTIGRAVITY_BEST_PRACTICES.md`
+- `dist/README.md`
 
 ---
 
-## 🔗 Related Projects
+## 10) Licença
 
-- [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) - MCP server for n8n
-- [n8n](https://n8n.io/) - Workflow automation platform
+MIT — veja `LICENSE`.
 
----
+## Créditos
 
-## 📊 What's Included
-
-- **7** complementary skills that work together
-- **525+** n8n nodes supported
-- **2,653+** workflow templates for examples
-- **10** production-tested Code node patterns
-- **Comprehensive** error catalogs and troubleshooting guides
-
----
-
-**Ready to build flawless n8n workflows? Get started now!** 🚀
+Concebido por Romuald Członkowski.
+Parte do ecossistema do projeto n8n-mcp.

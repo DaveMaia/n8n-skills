@@ -40,6 +40,8 @@ echo "📦 Building complete bundle for Claude Code..."
 zip -rq "$DIST_DIR/n8n-mcp-skills-v${VERSION}.zip" \
     .claude-plugin/ \
     README.md \
+    AGENTS.md \
+    GEMINI.md \
     LICENSE \
     skills/ \
     -x "*.DS_Store"

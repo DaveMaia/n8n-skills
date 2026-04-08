@@ -83,6 +83,8 @@ Each zip contains a skill folder at the root with:
   ├── plugin.json      # Claude Code plugin metadata
   └── marketplace.json # Marketplace listing metadata
 README.md              # Project overview and documentation
+AGENTS.md              # Cross-agent operational instructions
+GEMINI.md              # Antigravity-native guardrails and workflow
 LICENSE                # MIT License
 skills/                # All 7 skills in subfolders
   ├── n8n-expression-syntax/
